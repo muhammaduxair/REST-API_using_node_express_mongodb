@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="box">
+        <h2>Sign in</h2>
+        <form action="/signin" method="POST">
+            <input type="email" required placeholder="Enter Your Email" name="email" autocomplete="off" />
+            <input type="password" required placeholder="Enter Password" name="password" />
+            <button type="submit">Sign in</button>
+            <p>{{message}}</p>
+        </form>
+    </div>
+</body>
+
+</html>

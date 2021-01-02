@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="box">
+        <h2>SignUp</h2>
+        <form action="/signup" method="POST">
+            <input type="text" required placeholder="Enter Your Name" name="fullname" />
+            <input type="email" required placeholder="Enter Your Email" name="email" />
+            <input type="number" required placeholder="Enter Your Age" name="age" />
+            <div class="radioBox">
+                <p>Gender:</p>
+                <label>
+                    <input type="radio" value="male" name="gender" />
+                    Male
+                </label>
+                <label>
+                    <input type="radio" value="female" name="gender" />
+                    Female
+                </label>
+            </div>
+            <input type="number" required placeholder="Enter Your Phone Number" name="phone" />
+            <input type="password" required placeholder="Enter Password" name="password" />
+            <input type="password" required placeholder="Confirm Password" name="confirm_password" />
+            <button type="submit">Submit Form</button>
+            <p>{{message}}</p>
+        </form>
+    </div>
+</body>
+
+</html>
