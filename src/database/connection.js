@@ -46,10 +46,6 @@ const mySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  token: {
-    type: String,
-    required: true,
-  },
 });
 
 // applying middlewares for hashing secure password

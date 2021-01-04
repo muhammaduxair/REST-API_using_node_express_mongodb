@@ -62,3 +62,11 @@ body {
   margin-right: 10px;
   font-size: 18px;
 }
+.box form > p {
+  text-align: center;
+  margin: 5px 0;
+}
+.box a {
+  text-align: center;
+  margin-top: 5px;
+}

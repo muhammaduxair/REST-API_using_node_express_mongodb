@@ -7,6 +7,7 @@ const hbs = require("hbs");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+// const auth = require("../middleware/auth");
 
 const port = process.env.PORT;
 const static_path = path.join(__dirname, "../public");
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(static_path));
 app.use(cookieParser());
 
+// app.set("view engine", "hbs");
 app.set("view engine", "hbs");
 const view_path = path.join(__dirname, "../templates/views");
 app.set("views", view_path);
@@ -35,9 +37,31 @@ app.get("/signin", (req, res) => {
   res.render("signin");
 });
 
-app.get("/secret", (req, res) => {
-  console.log(req.cookies.jwt);
-  res.render("secret");
+app.get("/secret", async (req, res) => {
+  try {
+    const token = req.cookies.jwt;
+    const jwtVerify = jwt.verify(token, process.env.SECRET_KEY);
+    const model = await MyModel.find({ email: jwtVerify.email });
+    if (jwtVerify.email === model[0].email) {
+      res.status(200).render("secret", {
+        name: `${model[0].fullname}`,
+        email: `${model[0].email}`,
+        message: `${model[0].fullname} You Have Been Successfully Loged In`,
+      });
+    } else {
+      res.status(401).send("Please Login");
+    }
+  } catch (error) {
+    res.render("signup", {
+      message: `The Secret Page is Valid For Authorized users Please Create Account or Sign in`,
+    });
+  }
+});
+
+// logout method
+app.get("/logout", (req, res) => {
+  res.clearCookie("jwt");
+  res.redirect("/");
 });
 
 app.post("/signup", async (req, res) => {
@@ -54,19 +78,9 @@ app.post("/signup", async (req, res) => {
     });
 
     if (req.body.password === req.body.confirm_password) {
-      const data = new MyModel({
-        fullname: req.body.fullname,
-        email: req.body.email,
-        age: req.body.age,
-        gender: req.body.gender,
-        phone: req.body.phone,
-        password: req.body.password,
-        token: tokenGenerator,
-      });
+      const data = new MyModel(req.body);
       await data.save();
-      res.render("home", {
-        message: `${req.body.fullname} Your Regestration has been successfully submited`,
-      });
+      res.redirect("/secret");
     } else {
       res.status(400).render("signup", {
         message: "Your Password is not Matched",
@@ -93,15 +107,12 @@ app.post("/signin", async (req, res) => {
       process.env.SECRET_KEY
     );
     res.cookie("jwt", tokenGenerator, {
-      expires: new Date(Date.now() + 120 * 1000),
       httpOnly: true,
     });
     // end token part
 
     if (req.body.email === checker.email && passCompare) {
-      res.render("home", {
-        message: `${checker.fullname} You Have Been Successfully Loged In`,
-      });
+      res.redirect("/secret");
     } else {
       res.render("signin", {
         message: "Invalid Login Details",
